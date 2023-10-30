@@ -1,95 +1,155 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useEffect, useState } from "react";
+import Modal from "./components/modal";
 
-export default function Home() {
+function MyComponent() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  // const elementRef = useRef(null);
+  // const [isFullScreen, setIsFullScreen] = useState(false);
+
+  // const toggleFullScreen = () => {
+  //   const elem: any = elementRef.current;
+
+  //   if (document.fullscreenElement) {
+  //     try {
+  //       exitFullscreenWithConfirmation();
+  //     } catch (err) {
+  //       console.error("Exit fullscreen failed:", err);
+  //     }
+  //   } else {
+  //     elem.requestFullscreen().catch((err: any) => {
+  //       console.error("Request fullscreen failed:", err);
+  //     });
+  //   }
+  // };
+
+  // const exitFullscreenWithConfirmation = () => {
+  //   if (window.confirm("Are you sure you want to exit full-screen mode?")) {
+  //     document.exitFullscreen();
+  //   }
+  // };
+
+  // const handleEscapeKey = (event: any) => {
+  //   console.log(event.keyCode, event.key, isFullScreen);
+  //   if (isFullScreen && event.key === "Control") {
+  //     exitFullscreenWithConfirmation();
+  //   }
+  // };
+
+  useEffect(() => {
+    // Track whether the alert has been shown already
+    let alertShown = false;
+    let count = 0;
+    let count2 = 0;
+
+    // Disable right-click context menu
+    document.addEventListener("contextmenu", (e) => {
+      count++;
+      e.preventDefault();
+      if (!alertShown) {
+        alert(`You cannot right click`);
+        alertShown = true;
+      }
+    });
+
+    document.addEventListener(
+      "keydown",
+      (event: any) => {
+        if (event.keyCode == 123) {
+          console.log("Me here too");
+          alert(
+            "This function has been disabled to prevent you from stealing my code!"
+          );
+          // setIsModalOpen(true);
+          return false;
+        }
+        if (
+          event.ctrlKey &&
+          event.shiftKey &&
+          (event.keyCode == 73 || event.keyCode == 67)
+        ) {
+          console.log("I am here");
+          alert(
+            "This function has been disabled to prevent you from stealing my code!"
+          );
+          // setIsModalOpen(true);
+          return false;
+        }
+        if (event.ctrlKey && event.keyCode == 85) {
+          alert(
+            "This function has been disabled to prevent you from stealing my code!"
+          );
+          // setIsModalOpen(true);
+          return false;
+        }
+      },
+      false
+    );
+
+    // when the user loses focus
+    window.addEventListener("blur", () => {
+      count2++;
+      console.log(count2);
+      if (!alertShown && count2 <= 3) {
+        // alert(`Warning!!!!`);
+        // if (window.confirm("Are you sure you want to exit full-screen mode?"))
+        setIsModalOpen(true);
+        alertShown = true;
+      }
+    });
+
+    // when the user's focus is back to your tab (website) again
+    window.addEventListener("focus", () => {
+      // Reset the alertShown flag when the focus is back to your tab
+      alertShown = false;
+      setIsModalOpen(false);
+    });
+    
+    window.addEventListener("resize", function () {
+      if (
+        window.outerWidth - window.innerWidth > 100 ||
+        window.outerHeight - window.innerHeight > 100
+      ) {
+        alert("Developer tools are open!");
+        // You can take further action here.
+      }
+    });
+  }, []);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
+    <div>
+      {isModalOpen && (
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <p>This is the content of the modal.</p>
+            <button onClick={closeModal}>Close Modal</button>
+          </Modal>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      )}
+      {/* <button onClick={toggleFullScreen}>
+        {isFullScreen ? "Exit Full Screen" : "Toggle Full Screen"}
+      </button>
+      <div
+        style={{ background: "white" }}
+        ref={elementRef}
+        tabIndex={0} // Ensure the element is focusable
+        onKeyDown={handleEscapeKey}
+      >
+        Here is the content
+        <button onClick={toggleFullScreen}>
+          {isFullScreen ? "Exit Full Screen" : "Toggle Full Screen"}
+        </button>
+      </div> */}
+    </div>
+  );
 }
+
+export default MyComponent;
